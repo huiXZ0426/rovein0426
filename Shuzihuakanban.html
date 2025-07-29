@@ -1,0 +1,972 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>数字化看板</title>
+    <!-- 引入 echarts.js -->
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0a1f44;
+            color: #fff;
+            margin: 20px;
+            padding: 20px;
+            background-image: url('../img/bga1a08bc9.png');
+            background-size: cover; /* 使背景图片覆盖整个屏幕 */
+            background-position: center; /* 背景图片居中显示 */
+            background-repeat: no-repeat; /* 防止背景图片重复 */
+        }
+
+        .top {
+            width: 100%;
+            height: 8%;
+            text-align: center;
+            font-size: 50px;
+            color: blueviolet;
+            display: flex;
+            justify-content: space-between;
+            background-image: url('../img/top_bg.fdad7582.png');
+            background-size: cover; /* 使背景图片覆盖整个屏幕 */
+            background-position: center; /* 背景图片居中显示 */
+        }
+        .top-right, .top-left {
+            width: 30%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .top-left{
+            flex-direction:column;
+        }
+        .container {
+            width: 100%;
+            height: 92%;
+            display: flex;
+        }
+
+        .left, .right {
+            width: 25%;
+            display: flex;
+            flex-direction: column; /* 如果需要垂直排列子元素 */
+        }
+
+        .center {
+            width: 50%;
+            display: flex;
+            flex-direction: column; /* 如果需要垂直排列子元素 */
+        }
+
+        .center-top, .center-middle, .center-bottom {
+            width: 100%;
+            height: 10%;
+            display: flex;
+            border-radius: 10px;
+        }
+
+        .center-bottom {
+            height: 25%;
+            display: flex;
+            flex-direction: column; /* 如果需要垂直排列子元素 */
+        }
+
+        .center-top-card, .center-middle-card {
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px;
+            width: 20%;
+            height: 50%;
+            box-shadow: 0 4px 8px rgb(14, 120, 190, 0.80);
+            /*background-color: #333;*/
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .center-top-card {
+            width: 25%;
+            background-image: url('../img/stat_bg.5b1aa9a8.png');
+            background-size: cover; /* 使背景图片覆盖整个屏幕 */
+            background-position: center; /* 背景图片居中显示 */
+            background-repeat: no-repeat; /* 防止背景图片重复 */
+        }
+
+        .center-middle-card img {
+            height: 50px;
+        }
+
+        .center-middle-card-td {
+            display: flex;
+            justify-content:center;
+            align-content:center;
+            font-size: 20px;
+        }
+
+        .center-tird {
+            width: 100%;
+            height: 55%;
+            display: flex;
+            border-radius: 10px;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            padding: 0;
+            /*background-color: #1e3a5f;*/
+            border-radius: 10px;
+            margin: 10px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .card {
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px;
+            width: 100%;
+            height: 20%;
+            box-shadow: 0 4px 8px rgb(14, 120, 190, 0.80);
+            /*background-color: #333;*/
+        }
+
+        .center-bottom-card {
+            width: 45%;
+            box-shadow: 0 4px 8px rgb(14, 120, 190, 0.80);
+        }
+
+        .header {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: aqua;
+            height: 15%;
+            background-image: url('../img/header.png');
+            background-size: cover; /* 使背景图片覆盖整个屏幕 */
+            background-position: center; /* 背景图片居中显示 */
+            background-repeat: no-repeat; /* 防止背景图片重复 */
+        }
+
+        .statistic {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .chart {
+            height: 200px;
+            width: auto;
+            /*background-color: #888;*/
+            border-radius: 10px;
+            display: flex;
+            align-content: center;
+            justify-content: space-around;
+            margin: 30px,20px;
+            position: relative;
+            background-image: url('../img/border_bottom.71bcae2f.png');
+            /*background-size: cover;*/ /* 使背景图片覆盖整个屏幕 */
+            background-position:bottom; /* 背景图片居下显示 */
+            background-repeat: no-repeat; /* 防止背景图片重复 */
+        }
+
+            .chart img {
+                width: 30%;
+            }
+            .text-overlay {
+                position: absolute;
+                top: 50%;
+                left: 20%;
+                transform: translate(-50%, -50%);
+                color: white;
+                font-size: 24px;
+            }
+
+        .botton-border {
+
+        }
+        /*        .center-tird-horizonta {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display:flex;
+        }*/
+        .lunbotu {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .lunbotu-images {
+            display: flex;
+            width: 200%; /* 两张图片，所以宽度是容器宽度的两倍 */
+            transition: transform 0.5s ease;
+            height: 100%;
+        }
+
+        .lunbotu-image {
+            flex: 0 0 50%; /* 每张图片占容器宽度的50% */
+            height: 100%;
+        }
+
+            .lunbotu-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover; /* 确保图片覆盖整个容器，保持宽高比 */
+            }
+
+        .lunbotu-indicators {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            margin: 0 5px;
+            background-color: #ccc;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .active {
+            background-color: #333;
+        }
+
+        .machine-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            height: 100%;
+            width: 100%;
+        }
+
+        .machine-card {
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px;
+            width: 20%;
+            height: 20%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            background-image: url('../img/device_bg.0c96def3.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            cursor:pointer;
+        }
+
+        .machine-number {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+            .machine-number img {
+                width: 100px;
+            }
+
+        .machine-details {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: space-between;
+            width: auto;
+            height: 100%;
+            align-content:flex-start;
+        }
+
+        .machine-runtime, .machine-production, .machine-availability {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .btnHome, .btnExit {
+            font-family: Arial, sans-serif;
+            font-size: 30px;
+            margin: 20px;
+            padding: 20px;
+            color: blueviolet;
+            background-color: transparent; /* 设置背景为透明 */
+            box-shadow: 0 4px 8px rgb(14, 120, 190, 0.80);
+            cursor: pointer; /* 当鼠标悬停时显示为手型光标 */
+        }
+        #main,#main1,#main2,#main3,#main4,#main5{
+            width:100%;
+            height:100%;
+            display:flex;
+            justify-content:center
+        }
+        .center-icon {
+            background-color: #03E426;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-size: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 添加阴影 */
+
+        }
+    </style>
+
+</head>
+<body>
+    <div>
+        <div class="top">
+            <div class="top-left">
+                <div id="date"></div>
+                <script>
+                    function updateDate() {
+                        const now = new Date();
+                        const year = now.getFullYear();
+                        const month = String(now.getMonth() + 1).padStart(2, '0'); // 月份从0开始，所以加1
+                        const day = String(now.getDate()).padStart(2, '0');
+                        const dateString = `${year}年${month}月${day}日`;
+                        document.getElementById('date').textContent = dateString;
+                    }
+
+                    setInterval(updateDate, 1000 * 60 * 60 * 24); // 每天更新一次
+                    updateDate(); // 初始化时立即更新日期
+                </script>
+                白班 08:00-20:00
+            </div>
+            <div class="top-center">数字化看板</div>
+            <div class="top-right">
+                <div> <button class="btnHome" onclick="window.location.href='http://www.rovein.com/'">首页</button> </div>
+                <div> <button class="btnExit">退出</button>   </div>
+                <div id="time"></div>
+                <script>
+                    function updateClock() {
+                        const now = new Date();
+                        const hours = String(now.getHours()).padStart(2, '0');
+                        const minutes = String(now.getMinutes()).padStart(2, '0');
+                        const seconds = String(now.getSeconds()).padStart(2, '0');
+                        const timeString = `${hours}:${minutes}:${seconds}`;
+                        document.getElementById('time').textContent = timeString;
+                    }
+
+                    setInterval(updateClock, 1000);
+                    updateClock(); // 初始化时立即更新时间
+                </script>
+            </div>
+            
+        </div>
+        <div class="container">
+            <div class="left">
+                <div class="dashboard">
+                    <div class="card">
+                        <div class="header">实时移动率</div>
+                        <div class="chart"style="justify-content:center;">
+                            <img src="../img/base.47043290.png" />
+                            <span class="text-overlay">23</span>
+                            <img src="../img/base.47043290.png" />
+                            <span class="text-overlay"style="left:50%;">14</span>
+                            <img src="../img/base.47043290.png" />
+                            <span class="text-overlay"style="left:80%;">11</span>
+                        </div>
+                        <div class="date-data"style="display:flex;justify-content:space-around;margin:0,200px">
+                            <span>日</span>
+                            <span>周</span>
+                            <span>月</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="header">当班稼动率排行TOP5</div>
+                        <div class="chart">
+                            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                            <div id="main" ></div>
+                            <script type="text/javascript">
+                                // 基于准备好的dom，初始化echarts实例
+                                var myChart = echarts.init(document.getElementById('main'));
+
+                                // 指定图表的配置项和数据
+                                var option = {
+                                    
+                                    tooltip: {},
+                                    legend: {
+                                        data: ['销量']
+                                    },
+                                    xAxis: {
+                                        data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
+                                    },
+                                    yAxis: {},
+                                    series: [{
+                                        name: '销量',
+                                        type: 'bar',
+                                        data: [5, 20, 36, 10, 10, 20]
+                                    }]
+                                };
+
+                                // 使用刚指定的配置项和数据显示图表。
+                                myChart.setOption(option);
+                                //让图标跟随屏幕自动地去适应
+                                window.addEventListener("resize", function () {
+                                    myChart.resize();
+                                });
+                            </script>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="header">近7昨日运行状况</div>
+                        <div class="chart">
+                            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                            <div id="main1"></div>
+                            <script type="text/javascript">
+                                // 基于准备好的dom，初始化echarts实例
+                                var myChart1 = echarts.init(document.getElementById('main1'));
+
+                                myChart1.setOption({
+                                    legend: {},
+                                    tooltip: {},
+                                    series: [
+                                        {
+                                            name: '访问来源',
+                                            type: 'pie',    // 设置图表类型为饼图
+                                            radius: '55%',  // 饼图的半径，外半径为可视区尺寸（容器高宽中较小一项）的 55% 长度。
+                                            data: [          // 数据数组，name 为数据项名称，value 为数据项值
+                                                { value: 235, name: '视频广告' },
+                                                { value: 274, name: '联盟广告' },
+                                                { value: 310, name: '邮件营销' },
+                                                { value: 335, name: '直接访问' },
+                                                { value: 400, name: '搜索引擎' }
+                                            ]
+                                        }
+                                    ]
+                                })
+                                //让图标跟随屏幕自动地去适应
+                                window.addEventListener("resize", function () {
+                                    myChart1.resize();
+                                });
+                            </script>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="header">近7昵近7日稼动率趋势</div>
+                        <div class="chart">
+                            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                            <div id="main2"></div>
+                            <script type="text/javascript">
+                                // 基于准备好的dom，初始化echarts实例
+                                var myChart2 = echarts.init(document.getElementById('main2'));
+
+                                // 指定图表的配置项和数据
+                                var option = {
+                                    legend: {},
+                                    tooltip: {},
+                                    dataset: {
+                                        // 提供一份数据。
+                                        source: [
+                                            ['product', '2015', '2016', '2017'],
+                                            ['Matcha Latte', 43.3, 85.8, 93.7],
+                                            ['Milk Tea', 83.1, 73.4, 55.1],
+                                            ['Cheese Cocoa', 86.4, 65.2, 82.5],
+                                            ['Walnut Brownie', 72.4, 53.9, 39.1]
+                                        ]
+                                    },
+                                    // 声明一个 X 轴，类目轴（category）。默认情况下，类目轴对应到 dataset 第一列。
+                                    xAxis: { type: 'category' },
+                                    // 声明一个 Y 轴，数值轴。
+                                    yAxis: {},
+                                    // 声明多个 bar 系列，默认情况下，每个系列会自动对应到 dataset 的每一列。
+                                    series: [
+                                        { type: 'bar' },
+                                        { type: 'bar' },
+                                        { type: 'bar' }
+                                    ]
+                                };
+
+                                // 使用刚指定的配置项和数据显示图表。
+                                myChart2.setOption(option);
+                                //让图标跟随屏幕自动地去适应
+                                window.addEventListener("resize", function () {
+                                    myChart2.resize();
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="center">
+                <div class="center-top">
+                    <div class="center-top-card">
+                        <div>5%</div>
+                        <div>开机率</div>
+                    </div>
+                    <div class="center-top-card">
+                        <div>0%</div>
+                        <div>稼动率</div>
+                    </div>
+                    <div class="center-top-card">
+                        <div>0件</div>
+                        <div>当班产量</div>
+                    </div>
+                    <div class="center-top-card">
+                        <div>19台</div>
+                        <div>接入设备</div>
+                    </div>
+                </div>
+                <div class="center-middle">
+                    <div class="center-middle-card">
+                        <div>
+                            <img src="../img/center-middle-left.png" />
+                        </div>
+                        <div class="center-middle-card-td">
+                            <div>
+                                <div class="center-icon" style="background-color: rgb(3, 228, 38);"></div>
+                            </div>
+                            <div>运行 </div>
+                            <div>0 </div>
+                        </div>
+                        <div>
+                            <img src="../img/center-middle-right.png" />
+                        </div>
+                    </div>
+                    <div class="center-middle-card">
+                        <div><img src="../img/center-middle-left.png" /></div>
+                        <div class="center-middle-card-td">
+                            <div>
+                                <div class="center-icon" style="background-color: rgb(52, 152, 219);"></div>
+                            </div>
+                            <div>调机</div>
+                            <div>0 </div>
+                        </div>
+                        <div><img src="../img/center-middle-right.png" /></div>
+                    </div>
+                    <div class="center-middle-card">
+                        <div><img src="../img/center-middle-left.png" /></div>
+                        <div class="center-middle-card-td">
+                            <div>
+                                <div class="center-icon" style="background-color: rgb(217, 183, 38);"></div>
+                            </div>
+                            <div>待机</div>
+                            <div>0 </div>
+                        </div>
+                        <div><img src="../img/center-middle-right.png" /></div>
+                    </div>
+                    <div class="center-middle-card">
+                        <div><img src="../img/center-middle-left.png" /></div>
+                        <div class="center-middle-card-td">
+                            <div>
+                                <div class="center-icon" style="background-color: rgb(217, 20, 49);"></div>
+                            </div>
+                            <div>异常</div>
+                            <div>0 </div>
+                        </div>
+                        <div><img src="../img/center-middle-right.png" /></div>
+                    </div>
+                    <div class="center-middle-card">
+                        <div><img src="../img/center-middle-left.png" /></div>
+                        <div class="center-middle-card-td">
+                            <div>
+                                <div class="center-icon" style="background-color: rgb(187, 227, 254);"></div>
+                            </div>
+                            <div>离线 </div>
+                            <div>0 </div>
+                        </div>
+                        <div><img src="../img/center-middle-right.png" /></div>
+                    </div>
+
+                </div>
+                <div class="center-tird">
+                    <div class="lunbotu">
+                        <div class="lunbotu-images">
+                            <div class="lunbotu-image">
+                                <!--<img src="../img/default.3962085e.png" />-->
+                                <div class="machine-container">
+                                    <div class="machine-card"onclick="window.location.href='Dantaikanban.html'">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>1号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                            <!--<div class="machine-availability">稼动率: 0.0%</div>
+                                            <div class="machine-program">程序号: 82904A1N</div>-->
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>2号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>3号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>4号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>5号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>6号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>7号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>8号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>9号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>10号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>11号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>12号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="lunbotu-image">
+                                <!--<img src="../img/V10L.2d4d3475.png" />-->
+                                <div class="machine-container">
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>13号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>14号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>15号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>16号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>17号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>18号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>19号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>20号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                    <div class="machine-card">
+                                        <div class="machine-number">
+                                            <img src="../img/default.3962085e.png" />
+                                        </div>
+                                        <div class="machine-details">
+                                            <h3>21号机</h3>
+                                            <div class="machine-runtime">运行时长: 0.0h</div>
+                                            <div class="machine-production">产量: 0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lunbotu-indicators">
+                            <div class="indicator active" data-index="0"></div>
+                            <div class="indicator" data-index="1"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="center-bottom">
+                    <div class="dashboard">
+                        <div class="center-bottom-card">
+                            <div class="header">当班产量占比</div>
+                            <div class="chart">图表区域</div>
+                        </div>
+                        <div class="center-bottom-card">
+                            <div class="header">当班产量排行TOP5</div>
+                            <div class="chart">图表区域</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <div class="dashboard">
+                    <div class="card">
+                        <div class="header">当班产量占比</div>
+                        <div class="chart">
+                            <div id="main3"></div>
+                            <script type="text/javascript">
+                                var myChart3 = echarts.init(document.getElementById('main3'));
+
+                                var option = {
+                                    title: {},
+                                    legend: {},
+                                    tooltip: {},
+                                    xAxis: {
+                                        data: ["1", "2", "3"],
+                                    },
+                                    yAxis: {},
+                                    series: [{
+                                        name: '数字',
+                                        type: 'line',
+                                        data: [10, 20, 30]
+                                    }]
+                                };
+                                myChart3.setOption(option);
+                                //让图标跟随屏幕自动地去适应
+                                window.addEventListener("resize", function () {
+                                    myChart3.resize();
+                                });
+                            </script>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="header">当班产量排行TOP5</div>
+                        <div class="chart">
+                            <div id="main4">
+                                <script type="text/javascript">
+                                    var myChart4 = echarts.init(document.getElementById('main4'));
+
+                                    var option = {
+                                        xAxis: {
+                                            show: false,
+                                        },
+                                        yAxis: {
+                                            data: ["1", "2", "3"],
+                                            axisLine: {
+                                                show: false,                                                
+                                            },
+                                            axisTick: {
+                                                show: false,
+                                            },
+                                            axisLabel: {
+                                                color: "#fff",
+                                            },
+                                        },
+                                        series: [{
+                                            name: '数字',
+                                            type: 'bar',
+                                            data: [10, 20, 30]
+                                        }]
+                                    };
+                                    myChart4.setOption(option);
+                                    //让图标跟随屏幕自动地去适应
+                                    window.addEventListener("resize", function () {
+                                        myChart4.resize();
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="header">近7日趋势</div>
+                        <div class="chart">
+                            <div id="main5">
+                                <script type="text/javascript">
+                                    // 基于准备好的dom，初始化echarts实例
+                                    var myChart5 = echarts.init(document.getElementById('main5'));
+
+                                    // 指定图表的配置项和数据
+                                    var option = {
+
+                                        tooltip: {},
+                                        legend: {                                           
+                                        },
+                                        series: [{
+                                            name: '销量',
+                                            type: 'pie',
+                                            data: [
+                                                { value: 5, name:'上衣' },
+                                                { value: 10, name:'下衣' },
+                                                { value: 52, name:'鞋子' },
+                                            ]
+                                        }]
+                                    };
+
+                                    // 使用刚指定的配置项和数据显示图表。
+                                    myChart5.setOption(option);
+                                    //让图标跟随屏幕自动地去适应
+                                    window.addEventListener("resize", function () {
+                                        myChart5.resize();
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="header">近7日告警原因统计</div>
+                        <div class="chart">图表区域</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        let currentIndex = 0;
+        const images = document.querySelectorAll('.lunbotu-images');
+        const indicators = document.querySelectorAll('.indicator');
+        const totalImages = indicators.length;
+
+        function showNextImage() {
+            const offset = -currentIndex * 50; // 每张图片占50%
+            images[0].style.transform = `translateX(${offset}%)`;
+            indicators[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % totalImages;
+            indicators[currentIndex].classList.add('active');
+        }
+
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                currentIndex = index;
+                const offset = -currentIndex * 50; // 每张图片占50%
+                images[0].style.transform = `translateX(${offset}%)`;
+                indicators.forEach(indicator => indicator.classList.remove('active'));
+                indicator.classList.add('active');
+            });
+        });
+
+        setInterval(showNextImage, 3000); // 每3秒切换一次
+    </script>
+</body>
+</html>
