@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>测试，=>看板管理</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e2f;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .list-item {
+            background-color: #2e2e3a;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .details {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #3a3a45;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .list-item:hover .details {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="list-item" data-details='{
+            "status": "运行",
+            "shift": "白班",
+            "start_time": "2025-07-26 08:22:38",
+            "end_time": "2025-07-26 08:28:18",
+            "duration": "00:05:40",
+            "program_name": "CZ9370LDop1fm.NC"
+        }'>
+            运行: 00:04:40 (48.05%)
+        </div>
+        <div class="list-item" data-details='{
+            "status": "运行",
+            "shift": "白班",
+            "start_time": "2025-07-26 08:22:00",
+            "end_time": "2025-07-26 08:24:20",
+            "duration": "00:02:20",
+            "program_name": "CZ9370LDop1fm.NC"
+        }'>
+            运行: 00:02:00 (23.68%)
+        </div>
+        <!-- 可以添加更多列表项 -->
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.list-item').forEach(item => {
+                const detailsContainer = document.createElement('div');
+                detailsContainer.className = 'details';
+                item.appendChild(detailsContainer);
+
+                const details = JSON.parse(item.getAttribute('data-details'));
+                detailsContainer.innerHTML = `
+            <ul>
+                <li><strong>状态:</strong> ${details.status}</li>
+                <li><strong>班组:</strong> ${details.shift}</li>
+                <li><strong>开始时间:</strong> ${details.start_time}</li>
+                <li><strong>结束时间:</strong> ${details.end_time}</li>
+                <li><strong>持续时长:</strong> ${details.duration}</li>
+                <li><strong>程序名:</strong> ${details.program_name}</li>
+            </ul>
+        `;
+
+                item.addEventListener('mouseover', () => {
+                    detailsContainer.style.display = 'block';
+                });
+
+                item.addEventListener('mouseout', () => {
+                    detailsContainer.style.display = 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
