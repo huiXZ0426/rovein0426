@@ -67,7 +67,10 @@
         </div>
         <!-- 可以添加更多列表项 -->
     </div>
-
+    <div>
+        <asp:Button runat="server" Text="Button" onclick="window.location.href='Shuzihuakanban.html'" style="width:500px;height:300px;background-color:red;">数字化看板</asp:Button>
+    </div>
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.list-item').forEach(item => {
@@ -77,15 +80,15 @@
 
                 const details = JSON.parse(item.getAttribute('data-details'));
                 detailsContainer.innerHTML = `
-            <ul>
-                <li><strong>状态:</strong> ${details.status}</li>
-                <li><strong>班组:</strong> ${details.shift}</li>
-                <li><strong>开始时间:</strong> ${details.start_time}</li>
-                <li><strong>结束时间:</strong> ${details.end_time}</li>
-                <li><strong>持续时长:</strong> ${details.duration}</li>
-                <li><strong>程序名:</strong> ${details.program_name}</li>
-            </ul>
-        `;
+                <ul>
+                    <li><strong>状态:</strong> ${details.status}</li>
+                    <li><strong>班组:</strong> ${details.shift}</li>
+                    <li><strong>开始时间:</strong> ${details.start_time}</li>
+                    <li><strong>结束时间:</strong> ${details.end_time}</li>
+                    <li><strong>持续时长:</strong> ${details.duration}</li>
+                    <li><strong>程序名:</strong> ${details.program_name}</li>
+                </ul>
+            `;
 
                 item.addEventListener('mouseover', () => {
                     detailsContainer.style.display = 'block';
